@@ -14,3 +14,8 @@
 ### Javascipt
 
 - [JS常用的数据处理方法](https://github.com/Toxicfy/Combing-notes/issues/3)
+- [前端代码规范](https://github.com/Toxicfy/Combing-notes/issues/1)
+
+
+### Vue
+- [Vue-Router(一)：基础部分 ](https://github.com/Toxicfy/Combing-notes/issues/6)
