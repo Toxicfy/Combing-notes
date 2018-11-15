@@ -15,5 +15,6 @@
 
 ### Vue
 
-- [Vue-Router(一)：项目构建及基础功能](https://github.com/Toxicfy/Combing-notes/issues/6)
+- [Vue-Router(三)：路由导航守卫及 keep-alive](https://github.com/Toxicfy/Combing-notes/issues/8)
 - [Vue-Router(二)：路由实例构建选项及传值](https://github.com/Toxicfy/Combing-notes/issues/7)
+- [Vue-Router(一)：项目构建及基础功能](https://github.com/Toxicfy/Combing-notes/issues/6)
