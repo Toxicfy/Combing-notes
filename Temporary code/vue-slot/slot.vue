@@ -23,10 +23,10 @@
     <el-button class="primary"> 确定 </el-button>
   </div>
 </div>
-
 export default DialogPanel;
 
 <!-- Parent Component -->
+import DialogPanel from './component/dialogPanel'
 <template>
   <DialogPanel>
     <div slot="defalut">
