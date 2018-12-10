@@ -1,12 +1,13 @@
-// similar as event(eventType,callback(state,payload));
+// 需要传入的是触发的事件类型，以及用于组合新数据的负荷
+//similar as event(eventType,callback(state,payload));
 
 
-//mutation-types.js
+//定义类型：mutation-types.js
 export const INCREMENT = 'INCREMENT';
 export const ADD = 'ADD';
 
 
-//store.js
+//数据仓库：store.js
 import Vuex from 'vuex';
 import {INCREMENT, ADD} from './mutation-types';
 
@@ -30,8 +31,8 @@ store.commit('increment');
 // store.commit('add', {amount: 10});
 store.commit({type: "add", amount: 10}); // type property is identified as mutations type;
 
+//同样的使用mapXXX进行简化
 import {mapMutations} from 'vuex';
-
 export default {
     methods: {
         ...mapMutations([
