@@ -1,3 +1,4 @@
+// vuex的数据的获取写在计算属性中
 // Vuex allows us to define "getters" in the store. You can think of them as computed properties for stores.
 const store = new Vuex.store({
     state: {
