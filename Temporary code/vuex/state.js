@@ -1,13 +1,6 @@
-// get state into vue Components
-import Vue from "vue";
-import Vuex from "vuex";
-
-const store = new Vuex.store({
-  state: { count: 0 }
-});
+// get state into vue Components（组件从store中获取数据）
 
 // example:
-
 // const Counter = {
 //     template: `<div>{{count}}</div>`,
 //     // we can use computed monitor state, and trigger associated Dom update
@@ -18,6 +11,17 @@ const store = new Vuex.store({
 //     }
 // };
 
+// create store (store.js)
+import Vue from "vue";
+import Vuex from "vuex";
+const store = new Vuex.store({
+  state: { count: 0 }
+});
+export default store;
+
+// register store (index.js)
+import store from "./store";
+import Counter from "./components/Counter";
 const app = new Vue({
   el: "#app",
   components: { Counter },
@@ -26,6 +30,7 @@ const app = new Vue({
 });
 
 // providing the store option to root instance,we could get store as this.$store
+// 在根组件进行了注册后，在组件中就可以直接使用Vue实例属性进行访问： this.$store.valueName
 import { mapState } from "vuex";
 
 const Counter = {
@@ -35,7 +40,7 @@ const Counter = {
       return this.$store.count;
     }
   },
-  // if  we make use of multiple store state, we could use mapState helper as computed getter
+  // 辅助函数：if  we make use of multiple store state, we could use mapState helper as computed getter
   computed: mapState({
     count: state => state.count, // direct getter
     combinationState(state) {
