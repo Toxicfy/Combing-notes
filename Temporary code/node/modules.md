@@ -1,6 +1,6 @@
-对于Node.js的模块的应用：
+#对于Node.js的模块的应用：
 
-JavaScript
+```JavaScript
 const http = require("http");
 const {parse} = require("url");
 
@@ -15,11 +15,11 @@ const server = http.createServer((request, response) => {
 });
 
 server.listen(8080,"127.0.0.1");
-
+```
 
 在开启http服务的情况下： 我们可以使用url模块对请求的路径进行一系列的操作；
 
-JavaScript
+```JavaScript
 const http = require("http"),
     url = require("url"),
     path = require("path"),
@@ -49,3 +49,4 @@ http.createServer((request, response) => {
 
 }).listen(8000);
 
+```
