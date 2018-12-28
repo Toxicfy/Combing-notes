@@ -34,7 +34,7 @@ export default new Vuex.Store({
 
 接下来：我们先逐个讲述这几个 Store 的实例属性：
 
-## state
+## state && getter
 
 ```javascript
 // create store (store.js)
@@ -62,7 +62,7 @@ new Vue({
 
 完成注入后：
 
-```
+```javascript
 // 在根组件进行了注册后，在组件中就可以直接使用Vue实例属性进行访问： this.$store.valueName
 import { mapState } from "vuex";
 
@@ -91,6 +91,154 @@ const Counter = {
     // computed propName same as one of store state;
     ...mapState([
       "count" // map this.count to store.state.count
+    ])
+  }
+};
+```
+
+```javascript
+// Vuex allows us to define "getters" in the store. You can think of them as computed properties for stores.
+const store = new Vuex.store({
+  state: {
+    todos: [
+      { id: 1, text: "...", done: true },
+      { id: 2, text: "...", done: false }
+    ]
+  },
+  getters: {
+    // 方便的从state中获取值进行组合（keywords： 有返回值，方便获取state，多次使用）：
+    doneTodos: state => {
+      return state.todos.filter(todo => todo.done);
+    },
+    doneTodosCount: (state, getters) => {
+      return getters.doneTodos.length;
+    },
+    getTodoById: state => id => {
+      return state.todos.find(todo => todo.id === id);
+    }
+  }
+});
+
+//store.getter.doneTodos      --> [{id:1,text:'...',done:true}]
+//store.getter.doneTodosCount --> 1
+//store.getter.getTodoById(2) --> [{id:2,text:'...',done:false]
+
+import { mapGetters } from "vuex";
+
+// NOTICE:  getter 在通过属性访问时是作为 Vue 的响应式系统的一部分缓存其中的, 通过方法访问时，每次都会去进行调用，而不会缓存结果。
+const app = new Vue({
+  el: "#app",
+  // computed: {
+  //     doneTodosCount () {
+  //         return this.$store.getters.doneTodosCount
+  //     }
+  // },
+  computed: {
+    ...mapGetters({
+      //map `this.doneCount` to `this.$store.getters.doneTodosCount`
+      getDoneCounts: "doneTodosCount"
+    }),
+    ...mapGetters([
+      // direct used
+      "doneTodosCount",
+      "getTodoById"
+    ])
+  }
+});
+```
+
+> 通过 `state/getter` 我们可以直接获取到 `store` 中的数据，并且可以利用 `state` 中的数据派生状态（`computed state`）（到此我们依旧无法改变 `state`）
+
+## Mutations && Actions
+
+更改 `Vuex` 的 `store` 中的状态的唯一方法是提交 mutation。`mutation` 不能直接调用，而要通过相应的 `type` 调用相应的`store.commit` 方法
+
+```javascript
+// 需要传入的是触发的事件类型，以及用于组合新数据的负荷
+//similar as event(eventType,callback(state,payload));
+
+//定义类型：mutation-types.js
+export const INCREMENT = "INCREMENT";
+export const ADD = "ADD";
+
+//数据仓库：store.js
+import Vuex from "vuex";
+import { INCREMENT, ADD } from "./mutation-types";
+
+const store = new Vuex.store({
+  store: { count: 0 },
+  mutations: {
+    [INCREMENT]: state => state.count++, // state change
+    [ADD](state, payload) {
+      return state.count + payload.amount;
+    }
+  }
+});
+
+// but we can't directly call a mutation callback(handler); need commit this mutation;
+store.commit("increment");
+// store.commit('add', {amount: 10});
+store.commit({ type: "add", amount: 10 }); // type property is identified as mutations type;
+
+//同样的使用mapXXX进行简化
+import { mapMutations } from "vuex";
+export default {
+  methods: {
+    ...mapMutations([
+      "increment" // map this.increment to this.$store.commit('increment')
+    ])
+  }
+};
+
+// NOTICE__1: 如果在实例创建之后添加新的属性到实例上，它不会触发视图更新, 对于mutations也是如此,所以最好建议初始化就完成所有属性的添加
+Vue.set(obj, "newName", 123); //add
+state.obj = { ...state.obj, newName: 123 }; // replace obj
+
+// NOTICE__2:：why all mutation must be synchronous？
+// 因为回调函数中有异步函数，触发mutation后调用回调函数改变state的时机不能追踪；
+```
+
+对于 `Action` 在其中完成异步操作：因为接受一个与 `store` 实例具有相同方法和属性的 `context` 对象，可以使用 `context.commit` 提交 `mutations`；实际完成 `state` 变更依旧是 `mutation` 完成
+
+```javascript
+import Vuex from "vuex";
+import { INCREMENT } from "./mutation-type";
+
+const store = new Vuex.store({
+  state: { count: 0 },
+  mutation: {
+    [INCREMENT](state, payload) {
+      return state.count + payload.amount;
+    }
+  },
+  action: {
+    [INCREMENT]({ commit }) {
+      return new Promise((resolve, reject) => {
+        setTimeout(res => {
+          commit(INCREMENT, res);
+          resolve();
+        }, 100);
+      });
+    }
+  }
+});
+
+//component use
+import { INCREMENT } from "./mutation-type";
+
+this.$store.dispatch(INCREMENT);
+//mapAction
+export default {
+  computed: {
+    local() {
+      this[INCREMENT]().then(res => {
+        console.log(res);
+      });
+    }
+  },
+  methods: {
+    ...mapAction([
+      INCREMENT //this[INCREMENT] === this.$store.dispatch(INCREMENT)
     ])
   }
 };
