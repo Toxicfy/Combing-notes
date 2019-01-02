@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>get_post</title>
+    <style>
+      [v-cloak] {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app" v-cloak>
+      <ul>
+        <li v-for="(item,index) in items" :key="index">{{ item }}</li>
+      </ul>
+      <input v-model="item" type="text" />
+      <button @click="postItem">add</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+      const url = "http://localhost:8899/";
+      new Vue({
+        el: "#app",
+        data() {
+          return {
+            item: "",
+            items: []
+          };
+        },
+        created() {
+          axios.get(url).then(res => {
+            console.log(res);
+            this.items = res.data;
+          });
+        },
+        methods: {
+          postItem() {
+            axios.post(url, { item: this.item }).then(res => {
+              console.log(res);
+              this.items = res.data;
+              this.item = "";
+            });
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
