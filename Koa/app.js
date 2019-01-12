@@ -8,17 +8,18 @@ app.use(json());
 
 
 const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'root',
-    database: 'test'
+    host : 'localhost',
+    port : 3306,
+    database : 'testNode',
+    user : 'root',
+    password : 'root'
 })
 
-router.get('/search', async (ctx) => {
+router.get('/search', ctx => {
     const searchSql = `SELECT * FROM user`;
     connection.query(searchSql, (err, res) => {
-        if(err) throw err;
-        ctx.body = res;
+        if (err) throw err;
+        console.log(res);
     })
 
 })
